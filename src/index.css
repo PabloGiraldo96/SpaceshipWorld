@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Ceviche+One&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Shadows+Into+Light&display=swap");
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-image: linear-gradient(
+    to right top,
+    #f8f9fa,
+    #f0f2f4,
+    #e8ebee,
+    #e0e4e8,
+    #d8dde2,
+    #c6ccd1,
+    #b5bbc1,
+    #a4aab1,
+    #868c93,
+    #696f76,
+    #4e545a,
+    #343a40
+  );
+}
