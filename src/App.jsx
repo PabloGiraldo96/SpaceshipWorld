@@ -7,6 +7,7 @@ import { Physics } from "@react-three/rapier";
 import { Experience } from "./components/Experience";
 import { Suspense, useRef } from "react";
 import { useControls } from "./components/UseControls";
+import { Spinner } from "./components/Spinner";
 
 //export const Controls = {
 //  forward: "forward",
@@ -47,7 +48,7 @@ function App() {
     <KeyboardControls map={map}>
       <Canvas shadows camera={{ fov: 37 }}>
         <OrbitControls />
-        <Suspense fallback={null}>
+        <Suspense fallback={<Spinner />}>
           <Physics gravity={[0, -0.3, 0]}>
             <Experience />
             {/*<SpaceshipScene />*/}
