@@ -73,10 +73,10 @@ export function MixedScenes(props) {
 
     if (!spaceship) return;
 
-    const impulse = 5;
-    const torque = 0.7;
-    const maxSpeed = 15;
-    const velocity = spaceship.linvel();
+    const impulse = 6.6;
+    const torque = 1;
+    const maxSpeed = 25;
+    const velocity = spaceship.linverrl();
     const speed = Math.sqrt(
       velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 1.5
     );
