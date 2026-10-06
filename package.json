@@ -8,6 +8,9 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
+  },  
+  "engines": {
+    "node": "24.x"
   },
   "dependencies": {
     "@dimforge/rapier3d": "^0.14.0",
