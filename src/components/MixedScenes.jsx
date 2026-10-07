@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { useFrame, useGraph } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
+import { touchState } from "./touchState";
 import { useControls } from "./UseControls";
 import { RigidBody, useRapier } from "@react-three/rapier";
 
@@ -26,6 +27,8 @@ export function MixedScenes(props) {
   const fixedColliderRef = useRef();
   const cameraTarget = useRef();
   const cameraPosition = useRef();
+  const bankRef = useRef();
+  const MAX_BANK = 0.95;
   const cameraWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAtWorldPosition = useRef(new THREE.Vector3());
   const cameraLookAt = useRef(new THREE.Vector3());
@@ -58,7 +61,7 @@ export function MixedScenes(props) {
     };
   }, [resetGame]);
 
-  useFrame(({ camera }) => {
+  useFrame(({ camera }, delta) => {
     cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
     camera.position.lerp(cameraWorldPosition.current, 1);
 
@@ -70,15 +73,29 @@ export function MixedScenes(props) {
     }
 
     const spaceship = spaceshipRef.current;
+    const left = controls.left || touchState.left;
+    const right = controls.right || touchState.right;
+    const forward = controls.forward || touchState.forward;
+    const backward = controls.down || touchState.backward;
+    
+    if (bankRef.current) {
+    const steer = (left ? 1 : 0) - (right ? 1 : 0);
+    bankRef.current.rotation.z = THREE.MathUtils.damp(
+      bankRef.current.rotation.z,
+      -steer * MAX_BANK,
+      6,
+      delta
+    );
+  }
 
     if (!spaceship) return;
 
-    const impulse = 6.6;
+    const impulse = 100;
     const torque = 1;
     const maxSpeed = 25;
-    const velocity = spaceship.linverrl();
+    const velocity = spaceship.linvel();
     const speed = Math.sqrt(
-      velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 1.5
+      velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2
     );
 
     if (speed > maxSpeed) {
@@ -98,13 +115,13 @@ export function MixedScenes(props) {
     );
 
     if (controls.forward) {
-      spaceship.applyImpulse(forwardVector.multiplyScalar(impulse));
+    spaceship.applyImpulse(forwardVector.multiplyScalar(impulse));
     }
     if (controls.back) {
-      spaceship.applyImpulse({ x: 0, y: -4, z: 0 });
+    spaceship.applyImpulse({ x: 0, y: -4, z: 0 });      // baja la nave
     }
     if (controls.down) {
-      spaceship.applyImpulse(forwardVector.multiplyScalar(-impulse));
+    spaceship.applyImpulse(forwardVector.multiplyScalar(-impulse)); // va hacia atrás
     }
     if (controls.left) {
       spaceship.applyTorqueImpulse({ x: 0, y: torque, z: 0 });
@@ -381,17 +398,19 @@ export function MixedScenes(props) {
           type="kinematicPositionBased"
           colliders="trimesh"
           ref={spaceshipRef}
-          mass={400}
+          mass={100}
           friction={1}
           restitution={0}
         >
           <group
             name="Cube003"
             position={[48.836, 66.157, -309.236]}
-            scale={1.688}
+            scale={1.988}
           >
             <group ref={cameraTarget} position-z={7.5} />
             <group ref={cameraPosition} position-y={10} position-z={-60} />
+            <group ref={bankRef}>
+
             <mesh
               name="Cube005"
               geometry={nodes.Cube005.geometry}
@@ -427,6 +446,7 @@ export function MixedScenes(props) {
               geometry={nodes.Cube005_6.geometry}
               material={materials.Window}
             />
+            </group>
           </group>
         </RigidBody>
         <mesh
